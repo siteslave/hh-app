@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:helping_hand/pincode.dart';
+import 'package:helping_hand/register.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,11 +13,22 @@ class _HomePageState extends State<HomePage> {
     return new Scaffold(
         appBar: AppBar(
           title: Text('Helping Hand'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.person_add),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => RegisterPage()));
+              },
+            )
+          ],
         ),
         body: Center(
           child: GestureDetector(
             onTap: () {
-              print('Call now!!');
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => PincodePage(),
+                  fullscreenDialog: true));
             },
             child: Container(
               height: 200,
