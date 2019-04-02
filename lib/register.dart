@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:helping_hand/api.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -6,6 +9,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  Api api = Api();
+
   TextEditingController ctrlPincode = TextEditingController();
   TextEditingController ctrlCid = TextEditingController();
   TextEditingController ctrlTelphone = TextEditingController();
@@ -15,9 +20,23 @@ class _RegisterPageState extends State<RegisterPage> {
     var pincode = ctrlPincode.text;
     var telephone = ctrlTelphone.text;
 
-    print(cid);
-    print(pincode);
-    print(telephone);
+    if (cid.isNotEmpty && pincode.isNotEmpty && telephone.isNotEmpty) {
+      try {
+        var res = await api.doRegister(cid, pincode, telephone);
+        if (res.statusCode == 200) {
+          var jsonDecoded = json.decode(res.body);
+          if (jsonDecoded['ok']) {
+            Navigator.of(context).pop();
+          } else {
+            print(jsonDecoded['message']);
+          }
+        } else {
+          print('Connection error!');
+        }
+      } catch (e) {}
+    } else {
+      print('Data invalid');
+    }
   }
 
   @override
