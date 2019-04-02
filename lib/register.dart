@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:helping_hand/api.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -10,6 +12,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   Api api = Api();
+
+  final storage = new FlutterSecureStorage();
 
   TextEditingController ctrlPincode = TextEditingController();
   TextEditingController ctrlCid = TextEditingController();
@@ -26,6 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (res.statusCode == 200) {
           var jsonDecoded = json.decode(res.body);
           if (jsonDecoded['ok']) {
+            await storage.write(key: 'cid', value: cid);
             Navigator.of(context).pop();
           } else {
             print(jsonDecoded['message']);
@@ -33,7 +38,9 @@ class _RegisterPageState extends State<RegisterPage> {
         } else {
           print('Connection error!');
         }
-      } catch (e) {}
+      } catch (e) {
+        print(e);
+      }
     } else {
       print('Data invalid');
     }
