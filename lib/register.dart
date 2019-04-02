@@ -6,6 +6,20 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController ctrlPincode = TextEditingController();
+  TextEditingController ctrlCid = TextEditingController();
+  TextEditingController ctrlTelphone = TextEditingController();
+
+  Future doRegister() async {
+    var cid = ctrlCid.text;
+    var pincode = ctrlPincode.text;
+    var telephone = ctrlTelphone.text;
+
+    print(cid);
+    print(pincode);
+    print(telephone);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextFormField(
+              controller: ctrlCid,
               decoration: InputDecoration(
                   labelText: 'PERSONAL ID',
                   border: InputBorder.none,
@@ -29,6 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   hintText: 'xxxxxxxxxxxxx'),
             ),
             TextFormField(
+              controller: ctrlPincode,
               decoration: InputDecoration(
                   labelText: 'PINCODE',
                   border: InputBorder.none,
@@ -37,6 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   hintText: 'xxxxxxx'),
             ),
             TextFormField(
+              controller: ctrlTelphone,
               decoration: InputDecoration(
                 labelText: 'TELEPHONE',
                 border: InputBorder.none,
@@ -45,9 +62,12 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             RaisedButton.icon(
+              color: Colors.green,
               icon: Icon(Icons.save),
               label: Text('REGISTER'),
-              onPressed: () {},
+              onPressed: () {
+                doRegister();
+              },
             )
           ],
         ),
