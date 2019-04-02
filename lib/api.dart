@@ -17,4 +17,13 @@ class Api {
 
     return await http.post(_url, body: body);
   }
+
+  Future doLoginPincode(String cid, String pincode) async {
+    // localhost:3000/user/login - POST : pincode, cid
+    String _url = '$apiUrl/user/login';
+
+    var body = {"cid": cid.toString(), "pincode": pincode.toString()};
+
+    return await http.post(_url, body: body);
+  }
 }

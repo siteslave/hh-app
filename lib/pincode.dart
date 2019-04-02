@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:helping_hand/api.dart';
 import 'package:pin_code_view/pin_code_view.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -8,22 +11,31 @@ class PincodePage extends StatefulWidget {
 }
 
 class _PincodePageState extends State<PincodePage> {
+  Api api = Api();
+
   final storage = new FlutterSecureStorage();
   String cid;
 
-  Future getCid() async {
-    String _cid = await storage.read(key: 'cid');
-    print(_cid);
-
-    setState(() {
-      cid = _cid;
-    });
+  Future doLoginPincode(String pincode) async {
+    try {
+      String _cid = await storage.read(key: 'cid');
+      var res = await api.doLoginPincode(_cid, pincode);
+      if (res.statusCode == 200) {
+        var jsonDecoded = json.decode(res.body);
+        if (jsonDecoded['ok']) {
+          String token = jsonDecoded['token'];
+          await storage.write(key: 'token', value: token);
+          Navigator.of(context).pop();
+        } else {
+          print(jsonDecoded['message']);
+        }
+      }
+    } catch (e) {}
   }
 
   @override
   void initState() {
     super.initState();
-    getCid();
   }
 
   @override
@@ -48,12 +60,9 @@ class _PincodePageState extends State<PincodePage> {
             style: TextStyle(color: Colors.white),
           ),
           codeLength: 7,
-          correctPin: "1234",
-          onCodeSuccess: (code) {
-            print(code);
-          },
           onCodeFail: (code) {
             print(code);
+            doLoginPincode(code);
           },
         ));
   }
