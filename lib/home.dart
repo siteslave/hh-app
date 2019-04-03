@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:helping_hand/pincode.dart';
 import 'package:helping_hand/register.dart';
 
@@ -8,27 +9,65 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isLogged = false;
+  final storage = new FlutterSecureStorage();
+
+  Future getCid() async {
+    String cid = await storage.read(key: 'cid');
+    if (cid != null) {
+      setState(() {
+        isLogged = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCid();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: AppBar(
           title: Text('Helping Hand'),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.person_add),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => RegisterPage()));
-              },
-            )
+            isLogged
+                ? IconButton(
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () async {
+                      await storage.deleteAll();
+                      setState(() {
+                        isLogged = false;
+                      });
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(Icons.person_add),
+                    onPressed: () async {
+                      await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => RegisterPage()));
+                      var _cid = await storage.read(key: 'cid');
+                      if (_cid != null) {
+                        setState(() {
+                          isLogged = true;
+                        });
+                      }
+                    },
+                  )
           ],
         ),
         body: Center(
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => PincodePage(),
-                  fullscreenDialog: true));
+              if (isLogged) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => PincodePage(),
+                    fullscreenDialog: true));
+              } else {
+                print('Please login!');
+              }
             },
             child: Container(
               height: 200,
