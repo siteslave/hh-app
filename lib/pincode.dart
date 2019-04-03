@@ -6,6 +6,10 @@ import 'package:pin_code_view/pin_code_view.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class PincodePage extends StatefulWidget {
+  final String description;
+
+  PincodePage(this.description);
+
   @override
   _PincodePageState createState() => _PincodePageState();
 }

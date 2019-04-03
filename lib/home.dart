@@ -13,6 +13,8 @@ class _HomePageState extends State<HomePage> {
   bool isLogged = false;
   final storage = new FlutterSecureStorage();
 
+  TextEditingController ctrlDescription = TextEditingController();
+
   Future getCid() async {
     String cid = await storage.read(key: 'cid');
     if (cid != null) {
@@ -20,6 +22,48 @@ class _HomePageState extends State<HomePage> {
         isLogged = true;
       });
     }
+  }
+
+  Future<void> showEntryDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Description'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextFormField(
+                  controller: ctrlDescription,
+                  decoration: InputDecoration(
+                      labelText: 'Description',
+                      fillColor: Colors.white10,
+                      filled: true,
+                      helperText: 'รายละเอียดการขอความช่วยเหลือ'),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                if (ctrlDescription.text.isNotEmpty) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          PincodePage(ctrlDescription.text),
+                      fullscreenDialog: true));
+                } else {
+                  print('No description');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -62,9 +106,7 @@ class _HomePageState extends State<HomePage> {
           child: GestureDetector(
             onTap: () {
               if (isLogged) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => PincodePage(),
-                    fullscreenDialog: true));
+                showEntryDialog();
               } else {
                 print('Please login!');
               }
