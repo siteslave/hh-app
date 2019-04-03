@@ -44,6 +44,20 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future getCid() async {
+    String cid = await storage.read(key: 'cid');
+    if (cid != null) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCid();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
