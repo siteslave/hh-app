@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 
 class Api {
@@ -16,6 +18,21 @@ class Api {
     };
 
     return await http.post(_url, body: body);
+  }
+
+  Future doRequest(String symptom, String lat, String lng, String token) async {
+    // localhost:3000/request - POST : symptom, lat, lng
+    String _url = '$apiUrl/request';
+
+    var body = {
+      "symptom": symptom,
+      "lat": lat.toString(),
+      "lng": lng.toString()
+    };
+
+    return await http.post(_url,
+        body: body,
+        headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
   }
 
   Future doLoginPincode(String cid, String pincode) async {

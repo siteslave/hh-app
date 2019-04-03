@@ -60,6 +60,15 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
+            FlatButton(
+              child: Text(
+                'CANCEL',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ],
         );
       },

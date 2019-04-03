@@ -19,6 +19,8 @@ class _PincodePageState extends State<PincodePage> {
 
   final storage = new FlutterSecureStorage();
   String cid;
+  double lat;
+  double lng;
 
   Future doLoginPincode(String pincode) async {
     try {
@@ -29,7 +31,23 @@ class _PincodePageState extends State<PincodePage> {
         if (jsonDecoded['ok']) {
           String token = jsonDecoded['token'];
           await storage.write(key: 'token', value: token);
-          Navigator.of(context).pop();
+
+          if (lat != null && lng != null) {
+            var res2 = await api.doRequest(
+                widget.description, lat.toString(), lng.toString(), token);
+            if (res2.statusCode == 200) {
+              var decoded = json.decode(res.body);
+              if (decoded['ok']) {
+                Navigator.of(context).pop();
+              } else {
+                print(decoded['message']);
+              }
+            } else {
+              print('Connection error!');
+            }
+          } else {
+            print('no lat/lng');
+          }
         } else {
           print(jsonDecoded['message']);
         }
@@ -40,6 +58,12 @@ class _PincodePageState extends State<PincodePage> {
   Future getLocation() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      lat = position.latitude;
+      lng = position.longitude;
+    });
+
     print(position);
   }
 
