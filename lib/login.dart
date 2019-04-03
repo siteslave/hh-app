@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:helping_hand/api.dart';
 import 'package:helping_hand/home.dart';
+import 'package:helping_hand/register.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -77,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextFormField(
               controller: ctrlPincode,
+              obscureText: true,
               decoration: InputDecoration(
                   labelText: 'PINCODE',
                   border: InputBorder.none,
@@ -85,13 +87,34 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'xxxxxxx'),
             ),
             Divider(),
-            RaisedButton.icon(
-              color: Colors.green,
-              icon: Icon(Icons.vpn_key),
-              label: Text('LOGIN'),
-              onPressed: () {
-                doLogin();
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                RaisedButton.icon(
+                  color: Colors.green,
+                  icon: Icon(Icons.vpn_key),
+                  label: Text(
+                    'LOGIN',
+                  ),
+                  onPressed: () {
+                    doLogin();
+                  },
+                ),
+                FlatButton.icon(
+                  icon: Icon(
+                    Icons.person_add,
+                    color: Colors.green,
+                  ),
+                  label: Text(
+                    'REGISTER',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => RegisterPage()));
+                  },
+                )
+              ],
             )
           ],
         ),

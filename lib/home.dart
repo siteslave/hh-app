@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:helping_hand/login.dart';
 import 'package:helping_hand/pincode.dart';
 import 'package:helping_hand/register.dart';
 
@@ -38,9 +39,8 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.exit_to_app),
                     onPressed: () async {
                       await storage.deleteAll();
-                      setState(() {
-                        isLogged = false;
-                      });
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) => LoginPage()));
                     },
                   )
                 : IconButton(

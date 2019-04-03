@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:helping_hand/api.dart';
 import 'package:pin_code_view/pin_code_view.dart';
@@ -33,9 +33,16 @@ class _PincodePageState extends State<PincodePage> {
     } catch (e) {}
   }
 
+  Future getLocation() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position);
+  }
+
   @override
   void initState() {
     super.initState();
+    getLocation();
   }
 
   @override
