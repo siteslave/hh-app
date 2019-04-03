@@ -35,6 +35,13 @@ class Api {
         headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
   }
 
+  Future getStatus(String token) async {
+    // localhost:3000/request/status - POST : token
+    String _url = '$apiUrl/request/status';
+    return await http
+        .get(_url, headers: {HttpHeaders.authorizationHeader: 'Bearer $token'});
+  }
+
   Future doLoginPincode(String cid, String pincode) async {
     // localhost:3000/user/login - POST : pincode, cid
     String _url = '$apiUrl/user/login';

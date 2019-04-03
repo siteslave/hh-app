@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:mqtt_client/mqtt_client.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:helping_hand/api.dart';
 import 'package:helping_hand/login.dart';
 import 'package:helping_hand/pincode.dart';
 import 'package:helping_hand/register.dart';
@@ -14,6 +18,79 @@ class _HomePageState extends State<HomePage> {
   final storage = new FlutterSecureStorage();
 
   TextEditingController ctrlDescription = TextEditingController();
+  Api api = Api();
+
+  var registerId;
+  var topic;
+  var status;
+
+  Future connectMqtt() async {
+    var clientId = 'helping_hand-$registerId';
+    final MqttClient client = MqttClient('localhost', clientId);
+
+    final MqttConnectMessage connMess = MqttConnectMessage()
+        .withClientIdentifier(clientId)
+        .keepAliveFor(20) // Must agree with the keep alive set above or not set
+        .withWillTopic(
+            'willtopic') // If you set this you must set a will message
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+
+    print('Client connecting....');
+
+    try {
+      await client.connect('q4u', '##q4u##');
+    } on Exception catch (e) {
+      print('EXAMPLE::client exception - $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus.state == MqttConnectionState.connected) {
+      print('Client connected');
+    } else {
+      print(
+          'ERROR client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+    }
+
+    String topic = 'request/status/$registerId';
+    print(topic);
+
+    client.subscribe(topic, MqttQos.atMostOnce);
+
+    client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+      final MqttPublishMessage recMess = c[0].payload;
+      final String pt =
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      print(pt);
+    });
+  }
+
+  Future getStatus() async {
+    String token = await storage.read(key: 'token');
+    try {
+      var rs = await api.getStatus(token);
+      if (rs.statusCode == 200) {
+        var decoded = json.decode(rs.body);
+        if (decoded['ok']) {
+          setState(() {
+            status = decoded['status'].toString();
+            registerId = decoded['registerId'].toString();
+            if (decoded['registerId'] != null) {
+              connectMqtt();
+            }
+          });
+        } else {
+          print(decoded['message']);
+        }
+      } else {
+        print('Connection error!');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future getCid() async {
     String cid = await storage.read(key: 'cid');
@@ -79,6 +156,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getCid();
+    getStatus();
   }
 
   @override

@@ -28,6 +28,7 @@ dependencies:
   http: any
   flutter_secure_storage: ^3.2.1+1
   geolocator: '^3.0.1'
+  mqtt_client: ^5.5.2
 
 dev_dependencies:
   flutter_test:
