@@ -24,10 +24,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Future doLogin() async {
     try {
+      String deviceToken = await storage.read(key: 'deviceToken');
       String cid = ctrlCid.text;
       String pincode = ctrlPincode.text;
 
-      var rs = await api.doLoginPincode(cid, pincode);
+      var rs = await api.doLoginPincode(cid, pincode, deviceToken);
       if (rs.statusCode == 200) {
         var jsonDecoded = json.decode(rs.body);
         if (jsonDecoded['ok']) {
@@ -75,8 +76,9 @@ class _LoginPageState extends State<LoginPage> {
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
-    _firebaseMessaging.getToken().then((String token) {
+    _firebaseMessaging.getToken().then((String token) async {
       print(token);
+      await storage.write(key: 'deviceToken', value: token);
     });
   }
 
