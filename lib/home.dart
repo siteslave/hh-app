@@ -129,13 +129,15 @@ class _HomePageState extends State<HomePage> {
           actions: <Widget>[
             FlatButton(
               child: Text('OK'),
-              onPressed: () {
+              onPressed: () async {
                 if (ctrlDescription.text.isNotEmpty) {
                   Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
+                  await Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
                           PincodePage(ctrlDescription.text),
                       fullscreenDialog: true));
+
+                  getStatus();
                 } else {
                   print('No description');
                 }
