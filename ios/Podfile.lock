@@ -32,6 +32,14 @@ PODS:
     - Flutter
   - google_api_availability (2.0.0):
     - Flutter
+  - google_maps_flutter (0.0.1):
+    - Flutter
+    - GoogleMaps
+  - GoogleMaps (2.7.0):
+    - GoogleMaps/Maps (= 2.7.0)
+  - GoogleMaps/Base (2.7.0)
+  - GoogleMaps/Maps (2.7.0):
+    - GoogleMaps/Base
   - GoogleToolboxForMac/Defines (2.1.4)
   - GoogleToolboxForMac/Logger (2.1.4):
     - GoogleToolboxForMac/Defines (= 2.1.4)
@@ -52,6 +60,7 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
+  - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
 
 SPEC REPOS:
@@ -61,6 +70,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseInstanceID
     - FirebaseMessaging
+    - GoogleMaps
     - GoogleToolboxForMac
     - nanopb
     - Protobuf
@@ -76,6 +86,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geolocator/ios"
   google_api_availability:
     :path: ".symlinks/plugins/google_api_availability/ios"
+  google_maps_flutter:
+    :path: ".symlinks/plugins/google_maps_flutter/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
 
@@ -90,6 +102,8 @@ SPEC CHECKSUMS:
   flutter_secure_storage: dbcc8ff35d99569c3a4d3b483afa3339416c1a78
   geolocator: e054ad14f577d282c418eb5e32c5f0a8a5e6c69d
   google_api_availability: 80c105ad2c0ed01c18cf779653da2cb939518192
+  google_maps_flutter: 6449d5918d3f1a69a37dc9c557bbad7bb9bcf0e9
+  GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   permission_handler: 03dcf3ade9d5f398b8854b366cb9de718d3daa76

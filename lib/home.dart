@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:helping_hand/map.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 
 import 'package:flutter/material.dart';
@@ -168,86 +169,55 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: AppBar(
-          title: Text('Helping Hand'),
-          actions: <Widget>[
-            isLogged
-                ? IconButton(
-                    icon: Icon(Icons.exit_to_app),
-                    onPressed: () async {
-                      await storage.deleteAll();
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage()));
-                    },
-                  )
-                : IconButton(
-                    icon: Icon(Icons.person_add),
-                    onPressed: () async {
-                      await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => RegisterPage()));
-                      var _cid = await storage.read(key: 'cid');
-                      if (_cid != null) {
-                        setState(() {
-                          isLogged = true;
-                        });
-                      }
-                    },
-                  )
-          ],
-        ),
-        body: Center(
-          child: (status == "0" || status == "5")
-              ? new GestureDetector(
-                  onTap: () {
-                    if (isLogged) {
-                      showEntryDialog();
-                    } else {
-                      print('Please login!');
+      appBar: new AppBar(
+        title: Text('Helping Hand'),
+        actions: <Widget>[
+          isLogged
+              ? IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () async {
+                    await storage.deleteAll();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => LoginPage()));
+                  },
+                )
+              : IconButton(
+                  icon: Icon(Icons.person_add),
+                  onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => RegisterPage()));
+                    var _cid = await storage.read(key: 'cid');
+                    if (_cid != null) {
+                      setState(() {
+                        isLogged = true;
+                      });
                     }
                   },
-                  child: new Container(
-                    height: 200,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.red,
-                        border: Border.all(color: Colors.red[900], width: 10)),
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Help Me!',
-                          style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        )
-                      ],
-                    ),
-                  ),
                 )
-              : new Container(
+        ],
+      ),
+      body: new Center(
+        child: (status == "0" || status == "5")
+            ? new GestureDetector(
+                onTap: () {
+                  if (isLogged) {
+                    showEntryDialog();
+                  } else {
+                    print('Please login!');
+                  }
+                },
+                child: new Container(
                   height: 200,
                   width: 200,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: status == "1"
-                          ? Colors.orange
-                          : status == "2" ? Colors.green : Colors.blueGrey,
-                      border: Border.all(
-                          color: status == "1"
-                              ? Colors.orange[900]
-                              : status == "2"
-                                  ? Colors.green[900]
-                                  : Colors.blueGrey[900],
-                          width: 10)),
+                      color: Colors.red,
+                      border: Border.all(color: Colors.red[900], width: 10)),
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        status == "1"
-                            ? 'WAITING'
-                            : status == "2" ? "ACCEPTED" : "REJECT",
+                        'Help Me!',
                         style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -256,6 +226,45 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-        ));
+              )
+            : new Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: status == "1"
+                        ? Colors.orange
+                        : status == "2" ? Colors.green : Colors.blueGrey,
+                    border: Border.all(
+                        color: status == "1"
+                            ? Colors.orange[900]
+                            : status == "2"
+                                ? Colors.green[900]
+                                : Colors.blueGrey[900],
+                        width: 10)),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      status == "1"
+                          ? 'WAITING'
+                          : status == "2" ? "ACCEPTED" : "REJECT",
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.map),
+        onPressed: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (BuildContext context) => MapPage()));
+        },
+      ),
+    );
   }
 }
