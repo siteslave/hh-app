@@ -64,11 +64,14 @@ class _HomePageState extends State<HomePage> {
       final String pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       print(pt);
+      getStatus();
     });
   }
 
   Future getStatus() async {
     String token = await storage.read(key: 'token');
+    print(token);
+
     try {
       var rs = await api.getStatus(token);
       if (rs.statusCode == 200) {
@@ -76,6 +79,7 @@ class _HomePageState extends State<HomePage> {
         if (decoded['ok']) {
           setState(() {
             status = decoded['status'].toString();
+            print('STATUS $status');
             registerId = decoded['registerId'].toString();
             if (decoded['registerId'] != null) {
               connectMqtt();
@@ -190,35 +194,66 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: Center(
-          child: GestureDetector(
-            onTap: () {
-              if (isLogged) {
-                showEntryDialog();
-              } else {
-                print('Please login!');
-              }
-            },
-            child: Container(
-              height: 200,
-              width: 200,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
-                  border: Border.all(color: Colors.red[900], width: 10)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Help Me!',
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  )
-                ],
-              ),
-            ),
-          ),
+          child: (status == "0" || status == "5")
+              ? new GestureDetector(
+                  onTap: () {
+                    if (isLogged) {
+                      showEntryDialog();
+                    } else {
+                      print('Please login!');
+                    }
+                  },
+                  child: new Container(
+                    height: 200,
+                    width: 200,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                        border: Border.all(color: Colors.red[900], width: 10)),
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Help Me!',
+                          style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : new Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: status == "1"
+                          ? Colors.orange
+                          : status == "2" ? Colors.green : Colors.blueGrey,
+                      border: Border.all(
+                          color: status == "1"
+                              ? Colors.orange[900]
+                              : status == "2"
+                                  ? Colors.green[900]
+                                  : Colors.blueGrey[900],
+                          width: 10)),
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        status == "1"
+                            ? 'WAITING'
+                            : status == "2" ? "ACCEPTED" : "REJECT",
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
         ));
   }
 }
