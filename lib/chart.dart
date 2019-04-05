@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter_sparkline/flutter_sparkline.dart';
+import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 
 class ChartPage extends StatefulWidget {
   @override
@@ -67,6 +68,34 @@ class _ChartPageState extends State<ChartPage> {
                 end: Alignment.bottomCenter,
                 colors: [Colors.green[500], Colors.green[100]],
               ),
+            ),
+          ),
+          new AnimatedCircularChart(
+            size: const Size(300.0, 300.0),
+            initialChartData: <CircularStackEntry>[
+              new CircularStackEntry(
+                <CircularSegmentEntry>[
+                  new CircularSegmentEntry(
+                    33.33,
+                    Colors.blue[400],
+                    rankKey: 'completed',
+                  ),
+                  new CircularSegmentEntry(
+                    66.67,
+                    Colors.blueGrey[600],
+                    rankKey: 'remaining',
+                  ),
+                ],
+                rankKey: 'progress',
+              ),
+            ],
+            chartType: CircularChartType.Radial,
+            percentageValues: true,
+            holeLabel: '1/3',
+            labelStyle: new TextStyle(
+              color: Colors.blueGrey[600],
+              fontWeight: FontWeight.bold,
+              fontSize: 24.0,
             ),
           )
         ],
