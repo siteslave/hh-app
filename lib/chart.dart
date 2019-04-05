@@ -8,20 +8,20 @@ class ChartPage extends StatefulWidget {
 
 class _ChartPageState extends State<ChartPage> {
   static var barchartData = [
-    new BarChartData('2014', 5),
-    new BarChartData('2015', 25),
-    new BarChartData('2016', 100),
-    new BarChartData('2017', 75),
+    new BarChartData('ม.ค', 5),
+    new BarChartData('ก.พ', 25),
+    new BarChartData('มี.ค', 100),
+    new BarChartData('เม.ย', 75),
   ];
 
   List<charts.Series<BarChartData, String>> seriesList = [
     new charts.Series<BarChartData, String>(
-      id: 'Sales',
-      colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-      domainFn: (BarChartData sales, _) => sales.year,
-      measureFn: (BarChartData sales, _) => sales.total,
-      data: barchartData,
-    )
+        id: 'Sales',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (BarChartData sales, _) => sales.year,
+        measureFn: (BarChartData sales, _) => sales.total,
+        data: barchartData,
+        labelAccessorFn: (BarChartData sales, _) => '${sales.total.toString()}')
   ];
 
   @override
@@ -33,12 +33,24 @@ class _ChartPageState extends State<ChartPage> {
       body: ListView(
         children: <Widget>[
           Container(
-            height: 200,
+            height: 300,
             child: new charts.BarChart(
               seriesList,
               animate: true,
+              vertical: false,
+              barRendererDecorator: new charts.BarLabelDecorator<String>(),
             ),
-          )
+          ),
+          Container(
+            height: 300,
+            child: new charts.PieChart(seriesList,
+                animate: true,
+                defaultRenderer: new charts.ArcRendererConfig(
+                    arcRendererDecorators: [
+                      new charts.ArcLabelDecorator(
+                          labelPosition: charts.ArcLabelPosition.outside)
+                    ])),
+          ),
         ],
       ),
     );
