@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:helping_hand/api.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -18,6 +21,9 @@ class _MapPageState extends State<MapPage> {
   double currentLng;
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  final storage = new FlutterSecureStorage();
+  Api api = Api();
 
   static final CameraPosition myPosition = CameraPosition(
     target: LatLng(13.8449339, 100.5793709),
@@ -79,6 +85,30 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
+  Future updateLatLng() async {
+    if (currentLat != null && currentLng != null) {
+      var token = await storage.read(key: 'token');
+      try {
+        var rs = await api.updateLatLng(
+            currentLat.toString(), currentLng.toString(), token);
+        if (rs.statusCode == 200) {
+          var decoded = json.decode(rs.body);
+          if (decoded['ok']) {
+            Navigator.of(context).pop();
+          } else {
+            print(decoded['message']);
+          }
+        } else {
+          print('Connection error!');
+        }
+      } catch (error) {
+        print(error);
+      }
+    } else {
+      print('No current position!');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -119,10 +149,12 @@ class _MapPageState extends State<MapPage> {
                   Container(
                     child: IconButton(
                       icon: Icon(
-                        Icons.home,
+                        Icons.close,
                         color: Colors.black,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                     ),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: Colors.white),
@@ -157,7 +189,9 @@ class _MapPageState extends State<MapPage> {
                         Icons.save,
                         color: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        updateLatLng();
+                      },
                     ),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: Colors.red),
