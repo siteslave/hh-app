@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:helping_hand/chart.dart';
 import 'package:helping_hand/map.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 
@@ -172,6 +173,13 @@ class _HomePageState extends State<HomePage> {
       appBar: new AppBar(
         title: Text('Helping Hand'),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.pie_chart),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => ChartPage()));
+            },
+          ),
           isLogged
               ? IconButton(
                   icon: Icon(Icons.exit_to_app),
