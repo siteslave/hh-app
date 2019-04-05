@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   Future connectMqtt() async {
     var clientId = 'helping_hand-$registerId';
-    final MqttClient client = MqttClient('192.168.43.142', clientId);
+    final MqttClient client = MqttClient('172.16.42.81', clientId);
 
     final MqttConnectMessage connMess = MqttConnectMessage()
         .withClientIdentifier(clientId)
