@@ -14,6 +14,11 @@ class _MapPageState extends State<MapPage> {
   double lat;
   double lng;
 
+  double currentLat;
+  double currentLng;
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
   static final CameraPosition myPosition = CameraPosition(
     target: LatLng(13.8449339, 100.5793709),
     zoom: 18,
@@ -53,6 +58,27 @@ class _MapPageState extends State<MapPage> {
     print(position);
   }
 
+  void _add() {
+    final MarkerId markerId = MarkerId('1');
+
+    setState(() {
+      if (markers.containsKey(markerId)) {
+        markers.remove(markerId);
+      }
+    });
+
+    final Marker marker = Marker(
+      markerId: markerId,
+      position: LatLng(currentLat, currentLng),
+      infoWindow: InfoWindow(title: 'นายทดสอบ เล่นๆ', snippet: 'HN: 0041223'),
+      onTap: () {},
+    );
+
+    setState(() {
+      markers[markerId] = marker;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +99,16 @@ class _MapPageState extends State<MapPage> {
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
             },
+            onCameraMove: (CameraPosition position) {
+              print(position);
+              setState(() {
+                currentLat = position.target.latitude;
+                currentLng = position.target.longitude;
+              });
+
+              _add();
+            },
+            markers: Set<Marker>.of(markers.values),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 30.0, right: 10),
@@ -104,6 +140,7 @@ class _MapPageState extends State<MapPage> {
                       ),
                       onPressed: () {
                         gotoCurrentPosition();
+                        _add();
                       },
                     ),
                     decoration: BoxDecoration(
